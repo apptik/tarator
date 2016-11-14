@@ -1,0 +1,1 @@
+include ':app', ':core', ':play', ':gradle-plugin', ':android-runner', ':ddm-tools'

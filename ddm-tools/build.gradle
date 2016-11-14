@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+dependencies {
+    compile rootProject.ext.ddmlib
+    compile rootProject.ext.sdklib
+    compile rootProject.ext.sdkCommon
+    compile rootProject.ext.toolsCommon
+    compile rootProject.ext.buildTools
+}
+
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'

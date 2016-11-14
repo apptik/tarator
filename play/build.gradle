@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':gradle-plugin')
+    compile project(':ddm-tools')
+}
+
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

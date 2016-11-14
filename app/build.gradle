@@ -1,0 +1,72 @@
+buildscript {
+    dependencies {
+        repositories {
+            mavenCentral()
+            jcenter()
+            // NOTE: This is only needed when developing the plugin!
+            mavenLocal()
+        }
+
+        classpath 'com.android.tools.build:gradle:2.2.1'
+        //classpath 'io.apptik.tarator:gradle-plugin:0.0.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'com.android.application'
+//apply plugin: 'io.apptik.tarator-android'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "io.apptik.tarator"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "io.apptik.tarator.CucRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    repositories {
+        mavenCentral()
+
+        // NOTE: This is only needed when developing the plugin!
+        mavenLocal()
+    }
+
+    androidTestCompile(supportTestEspresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestCompile project(':android-runner')
+//    androidTestCompile project(':gradle-plugin')
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile(rootProject.ext.cucandroid) {
+        exclude module: 'cucumber-jvm-deps'
+    }
+    androidTestCompile(rootProject.ext.picocontainer) {
+        exclude module: 'cucumber-jvm-deps'
+    }
+    androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.3'
+}

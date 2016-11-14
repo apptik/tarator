@@ -1,0 +1,23 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+//apply plugin: 'project-report'
+
+dependencies {
+    compile project(':ddm-tools')
+
+    compile gradleApi()
+    compile localGroovy()
+
+    compile rootProject.ext.buildTools
+
+    testCompile gradleTestKit()
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+    testCompile 'junit:junit:4.12'
+}
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'
