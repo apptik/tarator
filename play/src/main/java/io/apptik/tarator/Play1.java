@@ -57,6 +57,8 @@ public class Play1 {
                 "io.apptik.tarator.test","io.apptik.tarator","io.apptik.tarator.CucRunner",
                 testApk, testedApk
         );
+        //we can overwrite the default arguments
+        testData.getInstrumentationRunnerArguments().put("features", "features/other");
         initDevices();
         runInstr();
         Nuts.terminate();
