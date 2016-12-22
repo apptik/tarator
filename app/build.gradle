@@ -7,7 +7,7 @@ buildscript {
             mavenLocal()
         }
 
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         //classpath 'io.apptik.tarator:gradle-plugin:0.0.1-SNAPSHOT'
     }
 }
@@ -16,12 +16,12 @@ apply plugin: 'com.android.application'
 //apply plugin: 'io.apptik.tarator-android'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "io.apptik.tarator"
-        minSdkVersion 19
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode 1
         versionName "1.0"
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -33,6 +33,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -48,9 +52,9 @@ dependencies {
     })
     androidTestCompile project(':android-runner')
 //    androidTestCompile project(':gradle-plugin')
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
-    testCompile 'junit:junit:4.12'
+    compile rootProject.ext.supportAppCompat
+    compile rootProject.ext.supportDesign
+    testCompile rootProject.ext.junit
 
     androidTestCompile(rootProject.ext.cucandroid) {
         exclude module: 'cucumber-jvm-deps'
@@ -58,5 +62,5 @@ dependencies {
     androidTestCompile(rootProject.ext.picocontainer) {
         exclude module: 'cucumber-jvm-deps'
     }
-    androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.3'
+    androidTestCompile rootProject.ext.cucJvm103
 }

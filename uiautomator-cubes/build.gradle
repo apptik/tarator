@@ -19,21 +19,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     lintOptions {
         abortOnError false
     }
-
 }
 
 dependencies {
-    compile rootProject.ext.supportTestRunner
-    compile(rootProject.ext.cucandroid) {
-        exclude module: 'cucumber-jvm-deps'
-    }
-    compile rootProject.ext.cucJvm103
+    androidTestCompile(rootProject.ext.supportTestEspresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     compile rootProject.ext.supportAppCompat
     testCompile rootProject.ext.junit
 }
-
-apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push-android.gradle'

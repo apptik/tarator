@@ -1,1 +1,1 @@
-include ':app', ':core', ':play', ':gradle-plugin', ':android-runner', ':ddm-tools'
+include ':app', ':core', ':play', ':gradle-plugin', ':android-runner', ':ddm-tools', ':uiautomator-cubes', ':gui-cubes', ':espresso-cubes', ':unitests', ':android-tools'

@@ -10,11 +10,16 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/android-runner" />
+            <option value="$PROJECT_DIR$/android-tools" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/ddm-tools" />
+            <option value="$PROJECT_DIR$/espresso-cubes" />
             <option value="$PROJECT_DIR$/gradle-plugin" />
+            <option value="$PROJECT_DIR$/gui-cubes" />
             <option value="$PROJECT_DIR$/play" />
+            <option value="$PROJECT_DIR$/uiautomator-cubes" />
+            <option value="$PROJECT_DIR$/unitests" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
