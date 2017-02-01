@@ -41,6 +41,7 @@ public class CucumberTestData implements TestData {
         this.appId = appId;
         this.testedAppId = testedAppId;
         this.cucumberRuuner = cucumberRuuner;
+
         this.testedApk = testedApk;
         this.testApk = testApk;
     }
@@ -73,6 +74,7 @@ public class CucumberTestData implements TestData {
 
     @Override
     public ApiVersion getMinSdkVersion() {
+
         return new DefaultApiVersion(19);
     }
 
