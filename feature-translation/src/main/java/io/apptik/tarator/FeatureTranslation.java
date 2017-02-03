@@ -24,7 +24,7 @@ public class FeatureTranslation {
 
     private static gherkin.Parser<GherkinDocument> parser = new gherkin.Parser<>(new AstBuilder());
     private static Map<String, Map<String, String>> translationsItem = new HashMap<>();
-
+    private static Pattern pattern = Pattern.compile("\"#[^\"]*\"");
 
     public static void main(String[] args) {
         translationsItem = getTranslations();
@@ -90,25 +90,17 @@ public class FeatureTranslation {
                     PrintWriter out = new PrintWriter(bw);
 
                     for (final ScenarioDefinition scenario: gherkinDocument.getFeature()
-                            .getChildren()
-                            ) {
+                            .getChildren()) {
 
                         System.out.println(scenario.getName());
 
-
                         for (Step step : scenario.getSteps()) {
-                            Pattern pattern = Pattern.compile("\"#.*\"");
                             Matcher mat = pattern.matcher(step.getText());
 
                             while (mat.find()) {
                                 System.out.println("mat found : " + mat.group() );
-
                             }
-
-
                         }
-
-
                     }
 
                 } catch (Exception e) {
