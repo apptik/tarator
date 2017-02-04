@@ -10,8 +10,12 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +28,10 @@ public class FeatureTranslation {
 
     private static gherkin.Parser<GherkinDocument> parser = new gherkin.Parser<>(new AstBuilder());
     private static Map<String, Map<String, String>> translationsItem = new HashMap<>();
+    private static Pattern pattern = Pattern.compile("\"#[^\"]*\"");
 
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String[] args) {
         translationsItem = getTranslations();
 
         File[] files = new File("app/src/androidTest/assets/features/local").listFiles();
@@ -34,44 +39,46 @@ public class FeatureTranslation {
 
     }
 
-    private static Map<String, Map<String, String>> getTranslations() {
+    private static Map<String, Map<String, String>> getTranslations() throws IOException {
         Map<String, Map<String, String>> res = new HashMap<>();
 
-        try {
-            String translations = new String (Files.readAllBytes(Paths.get
-                    ("feature-translation/features/remote/translations.txt")));
+        String translations = new String (Files.readAllBytes(Paths.get
+                ("feature-translation/features/remote/translations.txt")));
 
+        BufferedReader bufReader = new BufferedReader(new StringReader(translations));
+        String line;
+        String currItem = null;
+        String currItemLang = null;
+        Map<String, String> transItem = new HashMap<>();
 
-            final String[] occ = translations.split("\\s*#\\s*");
+        while( (line=bufReader.readLine()) != null ) {
+            line = line.trim();
 
-            for (String trans : occ) {
-
-                BufferedReader bufReader = new BufferedReader(new StringReader(trans));
-                Map<String, String> transItem = new HashMap<>();
-                String firstLine=bufReader.readLine();
-                String line=null;
-                System.out.println("firstLine : -"+ firstLine);
-
-                while( (line=bufReader.readLine()) != null ) {
-
-                    if (line.matches("^[a-zA-Z]{1,6}\\s*:.*")) {
-                        transItem.put((line.substring(0, line.indexOf(":"))).trim(),
-                                line.substring(line.indexOf(":")+1).trim());
-                        System.out.println("trans : -"+ transItem);
-
-                    }
+            // title
+            if (line.startsWith("#")) {
+                if (currItem != null) {
+                    res.put(currItem, transItem);
+                    transItem = new HashMap<>();
                 }
-
-                res.put(firstLine, transItem);
-
-
+                currItem = line.substring(1);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            // language line
+            else if (line.length() >= 4 &&
+                    IsoUtil.isValidISOLanguage(line.substring(0, 2)) &&
+                    line.substring(0, 4).contains(":")) {
+                currItemLang = line.substring(0, line.indexOf(":"));
+                transItem.put(currItemLang, line.substring(line.indexOf(":")+1));
+            }
+            // in case multiple lines
+            else if (line.length() > 0) {
+                if (currItemLang == null) throw new RuntimeException("error parsing");
+                transItem.put(currItemLang, transItem.get(currItemLang) + " " +
+                line);
+            }
         }
 
-        return null;
+
+        return res;
     }
 
 
@@ -90,25 +97,17 @@ public class FeatureTranslation {
                     PrintWriter out = new PrintWriter(bw);
 
                     for (final ScenarioDefinition scenario: gherkinDocument.getFeature()
-                            .getChildren()
-                            ) {
+                            .getChildren()) {
 
                         System.out.println(scenario.getName());
 
-
                         for (Step step : scenario.getSteps()) {
-                            Pattern pattern = Pattern.compile("\"#.*\"");
                             Matcher mat = pattern.matcher(step.getText());
 
                             while (mat.find()) {
                                 System.out.println("mat found : " + mat.group() );
-
                             }
-
-
                         }
-
-
                     }
 
                 } catch (Exception e) {
@@ -116,6 +115,18 @@ public class FeatureTranslation {
                 }
             }
         }
+    }
+
+    public static final class IsoUtil {
+        private static final Set<String> ISO_LANGUAGES = new HashSet<String>
+                (Arrays.asList(Locale.getISOLanguages()));
+
+        private IsoUtil() {}
+
+        public static boolean isValidISOLanguage(String s) {
+            return ISO_LANGUAGES.contains(s.toLowerCase());
+        }
+
     }
 
 }
