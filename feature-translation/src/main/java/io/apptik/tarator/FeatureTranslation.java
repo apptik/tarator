@@ -30,6 +30,16 @@ public class FeatureTranslation {
     private static Map<String, Map<String, String>> translationsItem = new HashMap<>();
     private static Pattern pattern = Pattern.compile("\"#[^\"]*\"");
 
+    public static final class IsoUtil {
+        private static final Set<String> ISO_LANGUAGES = new HashSet<String>
+                (Arrays.asList(Locale.getISOLanguages()));
+
+        public static boolean isValidISOLanguage(String s) {
+            return ISO_LANGUAGES.contains(s.toLowerCase());
+        }
+
+    }
+
     public static void main(String[] args) throws IOException {
 
         translationsItem = getTranslations();
@@ -83,50 +93,37 @@ public class FeatureTranslation {
 
 
 
-    private static void formatAllFiles(final File[] files) {
+    private static void formatAllFiles(final File[] files) throws IOException {
         for (File file : files) {
             if (file.isDirectory()) {
                 formatAllFiles(file.listFiles());
             } else {
-                try {
-                    String strings = new String (Files.readAllBytes(Paths.get(file.getPath
-                            ())));
-                    GherkinDocument gherkinDocument = parser.parse(strings);
-                    FileWriter fw = new FileWriter(file, true);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    PrintWriter out = new PrintWriter(bw);
+                String strings = new String (Files.readAllBytes(Paths.get(file.getPath
+                        ())));
 
-                    for (final ScenarioDefinition scenario: gherkinDocument.getFeature()
-                            .getChildren()) {
+                GherkinDocument gherkinDocument = parser.parse(strings);
+                FileWriter fw = new FileWriter(file, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw);
 
-                        System.out.println(scenario.getName());
+                for (final ScenarioDefinition scenario: gherkinDocument.getFeature()
+                        .getChildren()) {
 
-                        for (Step step : scenario.getSteps()) {
-                            Matcher mat = pattern.matcher(step.getText());
+                    System.out.println(scenario.getName());
 
-                            while (mat.find()) {
-                                System.out.println("mat found : " + mat.group() );
-                            }
+                    for (Step step : scenario.getSteps()) {
+                        Matcher mat = pattern.matcher(step.getText());
+
+                        while (mat.find()) {
+                            System.out.println("mat found : " + mat.group() );
                         }
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
             }
         }
     }
 
-    public static final class IsoUtil {
-        private static final Set<String> ISO_LANGUAGES = new HashSet<String>
-                (Arrays.asList(Locale.getISOLanguages()));
 
-        private IsoUtil() {}
-
-        public static boolean isValidISOLanguage(String s) {
-            return ISO_LANGUAGES.contains(s.toLowerCase());
-        }
-
-    }
 
 }
