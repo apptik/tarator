@@ -47,6 +47,7 @@ public class FeatureTranslation {
         File[] files = new File("app/src/androidTest/assets/features/local").listFiles();
 
 
+
     }
 
     private static Map<String, Map<String, String>> getTranslations() throws IOException {
@@ -59,7 +60,7 @@ public class FeatureTranslation {
         String line;
         String currItem = null;
         String currItemLang = null;
-        Map<String, String> transItem = new HashMap<>();
+        Map<String, String> transItem = null;
 
         while( (line=bufReader.readLine()) != null ) {
             line = line.trim();
@@ -67,8 +68,8 @@ public class FeatureTranslation {
             // title
             if (line.startsWith("#")) {
                 if (currItem != null) {
-                    res.put(currItem, transItem);
                     transItem = new HashMap<>();
+                    res.put(currItem, transItem);
                 }
                 currItem = line.substring(1);
             }
@@ -82,12 +83,9 @@ public class FeatureTranslation {
             // in case multiple lines
             else if (line.length() > 0) {
                 if (currItemLang == null) throw new RuntimeException("error parsing");
-                transItem.put(currItemLang, transItem.get(currItemLang) + " " +
-                line);
+                transItem.put(currItemLang, transItem.get(currItemLang) + " " + line);
             }
         }
-
-
         return res;
     }
 
@@ -98,8 +96,7 @@ public class FeatureTranslation {
             if (file.isDirectory()) {
                 formatAllFiles(file.listFiles());
             } else {
-                String strings = new String (Files.readAllBytes(Paths.get(file.getPath
-                        ())));
+                String strings = new String (Files.readAllBytes(Paths.get(file.getPath())));
 
                 GherkinDocument gherkinDocument = parser.parse(strings);
                 FileWriter fw = new FileWriter(file, true);
